@@ -1,6 +1,6 @@
 
 module "eks" {
-  source = "/home/lenovo/terraform_demo/terraform-MERN/terraform/modules/eks"
+  source = "../terraform/modules/eks"
 
   
   cluster-name               = var.cluster-name

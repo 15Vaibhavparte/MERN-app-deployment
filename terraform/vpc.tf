@@ -2,7 +2,7 @@
 
 
 module "vpc" {
-  source = "/home/lenovo/terraform_demo/terraform-MERN/modules/vpc" # Adjust path to your VPC module directory
+  source = "../terraform/modules/vpc" # Adjust path to your VPC module directory
 
   env          = var.env
   cluster-name = var.cluster-name

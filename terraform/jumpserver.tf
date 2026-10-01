@@ -1,6 +1,6 @@
 
 module "jumpserver" {
-  source = "/home/lenovo/terraform_demo/terraform-MERN/terraform/modules/ec2" # Path to your generic EC2 module
+  source = "../terraform/modules/ec2" 
 
   env  = var.env
   name = "jumpserver"
