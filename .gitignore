@@ -1,0 +1,30 @@
+# Local .terraform directories and plugins
+**/.terraform/*
+
+# Local state files (You are using S3 remote backend, but this prevents accidental local leaks)
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Execution plan files (can contain sensitive data in plaintext)
+*.tfplan
+
+# Ignore override files used for local testing
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore all .tfvars and .auto.tfvars files to prevent secret leakage
+*.tfvars
+*.auto.tfvars
+
+# EXCEPTION FOR YOUR CI/CD PIPELINE:
+# Since your GitHub Actions workflow requires your tfvars file to run, 
+# and it currently only contains safe data (CIDRs, versions), we explicitly 
+# allow it to be committed to the repository by using the '!' prefix.
+!terraform.tfvars
+# !dev.tfvars
