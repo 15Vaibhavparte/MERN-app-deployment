@@ -17,3 +17,8 @@ output "eks_cluster_sg_id" {
   description = "ID of the Jump Server security group."
   value       = module.vpc.eks_cluster_sg_id
 }
+
+output "jumpserver_id" {
+  description = "The ID of the Jump Server EC2 instance."
+  value       = module.jumpserver.instance_id
+}

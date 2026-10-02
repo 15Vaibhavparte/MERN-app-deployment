@@ -47,8 +47,8 @@ addons = [
     name    = "kube-proxy",
     version = "v1.36.0-eksbuild.25" # Matches the 1.36 cluster version
   },
-  {
-    name    = "aws-ebs-csi-driver",
-    version = "v1.66.0-eksbuild.1"
-  }
+  # {
+  #   name    = "aws-ebs-csi-driver",
+  #   version = "v1.66.0-eksbuild.1"
+  # }
 ]

@@ -9,7 +9,7 @@ module "jumpserver" {
   # Link directly to the VPC module outputs
   vpc_id        = module.vpc.vpc_id
   subnet_id     = module.vpc.public_subnet_ids[0] # Place in the first public subnet
-  instance_type = "t3.medium"
+  instance_type = "t3.small"
 
 #storage configuration
     root_volume_size = 15
@@ -31,3 +31,4 @@ module "jumpserver" {
     }
   ] 
 }
+

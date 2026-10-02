@@ -24,3 +24,15 @@ variable "ingress_rules" {
   }))
   default = []
 }
+
+variable "user_data" {
+  description = "User data script to run on instance launch"
+  type        = string
+  default     = ""
+}
+
+variable "tags" {
+  description = "Additional tags to apply to the instance"
+  type        = map(string)
+  default     = {}
+}

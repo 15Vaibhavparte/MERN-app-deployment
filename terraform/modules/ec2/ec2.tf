@@ -35,7 +35,7 @@ resource "aws_instance" "my_ec2_instance" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
   subnet_id     = var.subnet_id
-  security_groups = [aws_security_group.this.id]
+  vpc_security_group_ids = [aws_security_group.this.id]
   iam_instance_profile = aws_iam_instance_profile.this.name
 
 
@@ -45,8 +45,10 @@ resource "aws_instance" "my_ec2_instance" {
     delete_on_termination = true
   }
 
-  tags = {
+  user_data = var.user_data
+
+  tags = merge(var.tags, {
     environment = var.env
     Name = "${var.env}-${var.instance_name}"
-  }
+  })
 }

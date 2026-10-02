@@ -20,8 +20,7 @@ jobs:
     name: Terraform Plan
     runs-on: ubuntu-latest
     
-
-    # Removed the 'working-directory: eks' default so it runs in your root folder
+    
     defaults:
       run:
         shell: bash
