@@ -16,7 +16,7 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
 }
 
 resource "aws_eks_access_entry" "bms_user_access" {
-  cluster_name  = aws_eks_cluster.this.name # <-- IMPORTANT: Update "this" if your EKS cluster resource is named differently (e.g., aws_eks_cluster.eks.name)
+  cluster_name  = aws_eks_cluster.eks.name # <-- IMPORTANT: Update "this" if your EKS cluster resource is named differently (e.g., aws_eks_cluster.eks.name)
   principal_arn = "arn:aws:iam::168266173985:user/bms-user"
   type          = "STANDARD"
 }
