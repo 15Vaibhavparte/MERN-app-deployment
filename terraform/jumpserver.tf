@@ -1,6 +1,6 @@
 
 module "jumpserver" {
-  source = "../terraform/modules/ec2" 
+  source = "./modules/ec2" 
 
   env  = var.env
   name = "jumpserver"

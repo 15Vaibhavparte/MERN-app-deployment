@@ -1,6 +1,6 @@
 
 module "eks" {
-  source = "../terraform/modules/eks"
+  source = "./modules/eks"
 
   
   cluster-name               = var.cluster-name
