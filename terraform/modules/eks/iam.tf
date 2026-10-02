@@ -22,7 +22,7 @@ resource "aws_eks_access_entry" "bms_user_access" {
 }
 
 resource "aws_eks_access_policy_association" "bms_user_admin" {
-  cluster_name  = aws_eks_cluster.this.name # <-- IMPORTANT: Update "this" here as well
+  cluster_name  = aws_eks_cluster.eks.name # <-- IMPORTANT: Update "this" here as well
   principal_arn = aws_eks_access_entry.bms_user_access.principal_arn
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
   
