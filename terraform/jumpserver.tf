@@ -20,6 +20,8 @@ module "jumpserver" {
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   ]
 
+  user_data = templatefile("${path.module}/tools.sh", {})
+
   # Inject the Jump Server specific port rules
   ingress_rules = [
     {

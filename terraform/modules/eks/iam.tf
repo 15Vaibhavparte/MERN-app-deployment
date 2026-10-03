@@ -6,7 +6,6 @@ resource "random_integer" "random_suffix" {
 
 resource "aws_iam_role" "cluster-iam-role" {
   name = "${var.cluster-name}-role-${random_integer.random_suffix.result}"
-  
   assume_role_policy = data.aws_iam_policy_document.cluster_assume_role.json
 }
 

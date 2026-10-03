@@ -55,8 +55,8 @@ module "ci_cd_server" {
   subnet_id     = aws_subnet.public_subnet.id
   instance_type = var.instance_type
 
-  root_volume_size = 25
-  root_volume_type = "gp3"
+  root_volume_size = var.root_volume_size
+  root_volume_type = var.root_volume_type
 
   iam_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
