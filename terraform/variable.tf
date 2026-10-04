@@ -3,6 +3,7 @@ variable "env" {}
 variable "cluster-name" {}
 variable "vpc-cidr-block" {}
 variable "vpc-name" {}
+variable "vpc_id" {}
 variable "igw-name" {}
 variable "pub-subnet-count" {}  
 variable "pub-cidr-block" { type = list(string) }
@@ -32,6 +33,6 @@ variable "max_capacity_spot" {}
 variable "addons" {
   type = list(object({
     name    = string
-    version = string
+    version = optional(string)
   }))
 }

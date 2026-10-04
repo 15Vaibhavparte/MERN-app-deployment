@@ -23,3 +23,6 @@ eksctl version
 
 # install helm
 sudo snap install helm --classic
+
+helm repo add eks https://aws.github.io/eks-charts
+helm repo update eks

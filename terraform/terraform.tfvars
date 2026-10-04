@@ -33,22 +33,23 @@ desired_capacity_spot      = 1
 min_capacity_spot          = 1
 max_capacity_spot          = 10
 
+
 # Addon versions must match the EKS cluster version 
 addons = [
   {
     name    = "vpc-cni",
-    version = "v1.23.2-eksbuild.1"
+    # version = "v1.23.2-eksbuild.1"
   },
   {
     name    = "coredns"
-    version = "v1.14.6-eksbuild.4"
+    # version = "v1.14.6-eksbuild.4"
   },
   {
     name    = "kube-proxy",
-    version = "v1.36.0-eksbuild.25" # Matches the 1.36 cluster version
+    # version = "v1.36.0-eksbuild.25" # Matches the 1.36 cluster version
   },
   {
-    # name    = "aws-ebs-csi-driver",
+    name    = "aws-ebs-csi-driver",
     # version = "v1.66.0-eksbuild.1"
   }
 ]

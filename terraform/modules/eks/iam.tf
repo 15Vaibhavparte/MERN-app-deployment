@@ -30,6 +30,9 @@ resource "aws_eks_access_policy_association" "bms_user_admin" {
   }
 }
 
+
+# ---------- Node Group IAM Role ----------
+
 resource "aws_iam_role" "eks_nodes_role" {
   name = "${var.cluster-name}-nodegroup_role-${random_integer.random_suffix.result}"
 
@@ -41,10 +44,34 @@ resource "aws_iam_role_policy_attachment" "node_policies" {
   for_each = toset([
     "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
     "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
-    "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"    
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"    
   ])
 
   policy_arn = each.value
   role       = aws_iam_role.eks_nodes_role.name
+}
+
+
+# --------------------------------------------------- EBS CSI Driver IRSA -------------------------------------
+
+
+# Create the Role
+resource "aws_iam_role" "ebs_csi_driver_role" {
+  name               = "${var.env}-ebs-csi-driver-role"
+  assume_role_policy = data.aws_iam_policy_document.ebs_csi_trust_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.ebs_csi_driver_role.name
+}
+
+# --------------------------------------------------- ALB Controller IRSA -------------------------------------
+
+resource "aws_iam_policy" "alb_controller" {
+  name        = "AWSLoadBalancerControllerIAMPolicy"
+  description = "IAM policy for AWS Load Balancer Controller"
+
+  # Assumes your iam_policy.json file is in the same directory
+  policy = var.alb_controller_policy_json_path
 }

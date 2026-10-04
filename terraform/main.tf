@@ -2,7 +2,9 @@
 module "eks" {
   source = "./modules/eks"
 
-  
+  env                        = var.env
+  region                     = var.region
+  vpc_id                     = module.vpc.vpc_id
   cluster-name               = var.cluster-name
   private_subnet_ids         = module.vpc.private_subnet_ids
   eks_cluster_sg_id          = module.vpc.eks_cluster_sg_id
@@ -18,4 +20,6 @@ module "eks" {
   max_capacity_spot          = var.max_capacity_spot
   
   addons = var.addons
+  alb_controller_policy_json_path = file("${path.module}/iam_policy.json")
 }
+
