@@ -60,3 +60,24 @@ data "aws_iam_policy_document" "ebs_csi_trust_policy" {
     }
   }
 }
+
+# # Fetch cluster details
+data "aws_eks_cluster" "cluster" {
+  name = var.cluster-name 
+  depends_on = [aws_eks_cluster.eks]
+}
+
+# Configure the Helm provider explicitly
+provider "helm" {
+  kubernetes = {
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+
+    # Use exec to get a fresh token using the AWS CLI
+    exec = {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      args        = ["eks", "get-token", "--cluster-name", data.aws_eks_cluster.cluster.name]
+    }
+  }
+}

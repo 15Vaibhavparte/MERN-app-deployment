@@ -53,12 +53,12 @@ resource "helm_release" "aws_load_balancer_controller" {
       value = var.region
     },
     {
-      name  = "vpcId"
+      name  = "vpc_id"
       value = var.vpc_id
     },
     {
       name  = "serviceAccount.create"
-      value = "false"
+      value = "true"
     },
     {
       name  = "serviceAccount.name"
@@ -156,8 +156,6 @@ resource "aws_eks_addon" "addons" {
     aws_eks_node_group.ondemand,
     aws_eks_node_group.spot
   ]
-
-
 }
 
 
