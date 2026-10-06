@@ -1,8 +1,7 @@
 pipeline {
     agent any 
     tools {
-        jdk 'jdk'
-        nodejs 'nodejs'
+        nodejs 'node'
     }
     environment  {
         SCANNER_HOME=tool 'sonar-scanner'
@@ -10,6 +9,8 @@ pipeline {
         AWS_ECR_REPO_NAME = credentials('ECR_FRONT')
         AWS_DEFAULT_REGION = 'ap-south-1'
         REPOSITORY_URI = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/"
+        NO_PROXY = '127.0.0.1,localhost'
+        no_proxy = '127.0.0.1,localhost'
     }
     stages {
         stage('Cleaning Workspace') {
@@ -19,16 +20,21 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git credentialsId: 'GIT-TOKEN', url: 'https://github.com/15Vaibhavparte/MERN-app-deployment.git'
+                git branch: 'main', url: 'https://github.com/15Vaibhavparte/MERN-app-deployment.git'
             }
         }
         stage('Sonarqube Analysis') {
             steps {
                 dir('Application-Code/frontend') {
                     withSonarQubeEnv('sonar-server') {
-                        sh ''' $SCANNER_HOME/bin/sonar-scanner \
-                        -Dsonar.projectName=frontend \
-                        -Dsonar.projectKey=frontend '''
+                         sh '''
+                            /var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
+                              -Dsonar.projectName=frontend \
+                              -Dsonar.projectKey=frontend \
+                              -Dsonar.nodejs.executable=/var/lib/jenkins/tools/jenkins.plugins.nodejs.tools.NodeJSInstallation/node/bin/node \
+                              -Dsonar.javascript.node.maxspace=1024 \
+                              -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/*.min.js
+                        '''
                     }
                 }
             }
@@ -36,14 +42,14 @@ pipeline {
         stage('Quality Check') {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'SONAR_TOKEN' 
                 }
             }
         }
         stage('OWASP Dependency-Check Scan') {
             steps {
                 dir('Application-Code/frontend') {
-                    dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                    dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check', nvdCredentialsId: 'NVD_API_KEY'
                     dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
                 }
             }
@@ -82,32 +88,34 @@ pipeline {
         }
         stage('Checkout Code') {
             steps {
-                git credentialsId: 'GIT-TOKEN', url: 'https://github.com/15Vaibhavparte/MERN-app-deployment.git'
+                git branch: 'main', url: 'https://github.com/15Vaibhavparte/MERN-app-deployment.git'
             }
         }
         stage('Update Deployment file') {
             environment {
-                GIT_REPO_NAME = "End-to-End-Kubernetes-Three-Tier-DevSecOps-Project"
-                GIT_USER_NAME = "AmanPathak-DevOps"
+                GIT_REPO_NAME = "MERN-app-deployment"
+                GIT_USER_NAME = "15Vaibhavparte"
             }
             steps {
                 dir('Kubernetes-Manifests-file/Frontend') {
-                    withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                    withCredentials([usernamePassword(credentialsId: 'GITHUB_APP', 
+                    usernameVariable: 'GIT_USERNAME',
+                    passwordVariable: 'GIT_TOKEN')]) {
                         sh '''
-                            git config user.email "aman07pathak@gmail.com"
-                            git config user.name "AmanPathak-DevOps"
+                            git config user.email vaibhavparte2@gmail.com
+                            git config user.name 15Vaibhavparte
                             BUILD_NUMBER=${BUILD_NUMBER}
                             echo $BUILD_NUMBER
                             imageTag=$(grep -oP '(?<=frontend:)[^ ]+' deployment.yaml)
                             echo $imageTag
                             sed -i "s/${AWS_ECR_REPO_NAME}:${imageTag}/${AWS_ECR_REPO_NAME}:${BUILD_NUMBER}/" deployment.yaml
                             git add deployment.yaml
-                            git commit -m "Update deployment Image to version \${BUILD_NUMBER}"
-                            git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:master
+                            git commit -m "Update deployment Image to version ${BUILD_NUMBER}"
+                            git push https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
                         '''
                     }
                 }
             }
         }
-    }
+    }     
 }
