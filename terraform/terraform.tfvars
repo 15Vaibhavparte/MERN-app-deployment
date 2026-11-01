@@ -1,6 +1,5 @@
 
-
-
+# VPC configuration
 env                   = "dev"
 vpc-cidr-block        = "10.16.0.0/16"
 region               = "ap-south-1"
@@ -18,11 +17,13 @@ public-rt-name        = "public-route-table"
 private-rt-name       = "private-route-table"
 eip-name              = "elasticip-ngw"
 ngw-name              = "ngw"
-eks-sg                = "eks-sg"
+
 
 # EKS Compute Variables
-cluster-version            = "1.36" 
-cluster-name               = "eks-mern-cluster"
+cluster_version            = "1.36" 
+cluster_name               = "eks-mern-cluster"
+eks-sg                = "eks-sg"
+# enable_alb_controller    = true
 ondemand_instance_types    = ["t3.small"]
 desired_capacity_on_demand = 1      # Converted to numbers from strings
 min_capacity_on_demand     = 1

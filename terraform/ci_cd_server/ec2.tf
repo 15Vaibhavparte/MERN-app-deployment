@@ -94,3 +94,14 @@ module "ci_cd_server" {
     Name = "${var.env}-ci_cd_server"
   }
 }
+
+# create a 2 private repositories in ecr for docker images
+resource "aws_ecr_repository" "backend" {
+  name = "backend"
+  force_delete = true  # it will delete the repository even if it contains images
+}
+
+resource "aws_ecr_repository" "frontend" {
+  name = "frontend"
+  force_delete = true  
+}

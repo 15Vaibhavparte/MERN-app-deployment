@@ -5,7 +5,7 @@ module "vpc" {
   source = "./modules/vpc" # Adjust path to your VPC module directory
 
   env          = var.env
-  cluster-name = var.cluster-name
+  cluster-name = var.cluster_name
   vpc-name   = "${var.env}-${var.vpc-name}"
   cidr-block = var.vpc-cidr-block
   igw-name   = "${var.env}-${var.igw-name}"

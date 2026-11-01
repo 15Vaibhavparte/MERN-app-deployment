@@ -23,8 +23,6 @@ resource "aws_eks_cluster" "eks" {
   ]
 }
 
-# Fetch the cluster's OIDC certificate thumbprint
-
 
 # Register the OIDC provider with AWS IAM
 resource "aws_iam_openid_connect_provider" "eks" {
@@ -33,52 +31,13 @@ resource "aws_iam_openid_connect_provider" "eks" {
   url             = aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
-
-
-resource "helm_release" "aws_load_balancer_controller" {
-  name       = "aws-load-balancer-controller"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-load-balancer-controller"
-  namespace  = "kube-system"
-  version    = "1.7.2" # Pin a specific chart version for consistency
-
-  # Pass configuration values to the Helm chart
-  set = [
-    {
-      name  = "clusterName"
-      value = aws_eks_cluster.eks.name
-    },
-    {
-      name  = "region"
-      value = var.region
-    },
-    {
-      name  = "vpc_id"
-      value = var.vpc_id
-    },
-    {
-      name  = "serviceAccount.create"
-      value = "true"
-    },
-    {
-      name  = "serviceAccount.name"
-      value = "aws-load-balancer-controller"
-    }
-  ]
-
-
-  depends_on = [
-    module.alb_controller_irsa,
-    aws_eks_cluster.eks
-  ]
-}
-
+# Create the IAM role for the ALB Controller
 module "alb_controller_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts"
   version = "~> 6.0"
-
-  name = "AmazonEKSLoadBalancerControllerRole"
-
+  count   = var.enable_alb_controller ? 1 : 0
+  name = "Amazon-EKS-LB-Role-${var.cluster-name}"
+  
   # This tells the module to attach the pre-defined ALB Controller policy
   attach_load_balancer_controller_policy = true
 

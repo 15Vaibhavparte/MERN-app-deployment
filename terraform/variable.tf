@@ -1,9 +1,8 @@
 variable "region" {}
 variable "env" {}
-variable "cluster-name" {}
 variable "vpc-cidr-block" {}
 variable "vpc-name" {}
-variable "vpc_id" {}
+variable "vpc_id" { default = "" }
 variable "igw-name" {}
 variable "pub-subnet-count" {}  
 variable "pub-cidr-block" { type = list(string) }
@@ -20,7 +19,12 @@ variable "ngw-name" {}
 variable "eks-sg" {}
 
 # EKS
-variable "cluster-version" {}
+variable "cluster_name" {default = ""}
+variable "cluster_version" {default = ""}
+variable "enable_alb_controller"     { 
+    type = bool 
+    default = true 
+}
 variable "ondemand_instance_types" { default = ["t3.small"] }
 variable "spot_instance_types" {}
 variable "desired_capacity_on_demand" {}
